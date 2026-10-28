@@ -1,0 +1,29 @@
+{
+  "name": "shopfast-next-storefront",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A headless ShopFast store on Next.js: the App Router, server components, server actions and the Storefront API.",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@shopfast-sdk/client": "^0.1.0",
+    "next": "16.4.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=20.9"
+  }
+}
