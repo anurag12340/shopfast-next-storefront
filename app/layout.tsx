@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono, Onest, Schibsted_Grotesk } from 'next/font/google';
 import { cookies } from 'next/headers';
 import type { ReactNode } from 'react';
+import type { Shop } from '@shopfast-sdk/client';
 import { Footer } from '@/components/Footer';
 import { Header, type NavItem } from '@/components/Header';
 import { config } from '@/lib/config';
@@ -15,6 +16,17 @@ const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains', 
 
 const HEX = /^#[0-9a-f]{3,8}$/i;
 
+/** The store's favicon, else its logo, else its initial on its brand color: browsers never ask this site for /favicon.ico. */
+function iconOf(shop: Shop): string {
+  if (shop.faviconUrl !== null) return shop.faviconUrl;
+  if (shop.logoUrl !== null) return shop.logoUrl;
+  const color = HEX.test(shop.brandColor) ? shop.brandColor : '#6e56cf';
+  const first = shop.name.trim().charAt(0).toUpperCase();
+  const initial = /^[\p{L}\p{N}]$/u.test(first) ? first : 'S';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="${color}"/><text x="32" y="44" font-family="system-ui,sans-serif" font-size="34" font-weight="700" fill="#fff" text-anchor="middle">${initial}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const shop = await getShop();
   const description = shop.seo.description ?? (shop.tagline === '' ? null : shop.tagline);
@@ -27,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: shop.name, type: 'website',
       ...(shop.seo.socialImageUrl === null ? {} : { images: [{ url: shop.seo.socialImageUrl }] }),
     },
-    ...(shop.faviconUrl === null ? {} : { icons: { icon: shop.faviconUrl } }),
+    icons: { icon: iconOf(shop) },
     ...(shop.seo.allowIndexing ? {} : { robots: { index: false, follow: false } }),
   };
 }
